@@ -1,0 +1,1 @@
+{"$schema":"https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json","solution":{"name":"AnonymousPoll","id":"dd01cd18-daa6-4299-8889-59e7d8075940","version":"1.0.0.26","includeClientSideAssets":true,"isDomainIsolated":false},"paths":{"zippedPackage":"solution/anonymous-poll.sppkg"}}

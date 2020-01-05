@@ -1,0 +1,79 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.anonymousPoll {
+  .container {
+    margin: 0px auto;
+  }
+
+  .grid{
+    @include ms-Grid;
+  }
+
+  hr{
+    border-color: darkgrey;
+    border-width: 1px;
+  }
+
+  .lblQuestion, .lblQuestion>div>label{
+    font-weight: 400;
+    font-size: 24px;
+  }
+
+  .lblTotalVotes{
+    font-weight: 400;
+    font-size: small;
+  }
+
+  .imgVoted{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 125px;
+  }
+
+  .row {
+    @include ms-Grid-row;
+    padding: 0 0 5px 0;
+  }
+  .col{
+    @include ms-Grid-col;
+    @include ms-sm12;
+
+    .pollOption{
+      color: rgb(180, 177, 177);
+      font-size: small;
+      padding: 0 !important;
+    }
+  }
+
+  .colPollText{
+    @include ms-Grid-col;
+    @include ms-sm12;
+    // text-align: right;
+    padding: 0 5px !important;
+  }
+
+  .colPoll{
+    @include ms-Grid-col;
+    @include ms-sm8;
+    @include ms-md11;
+    height:20px;
+    padding-left: 0px;
+  }
+
+  .colPollColor{
+    background-color: $ms-color-themePrimary;
+    height:10px;
+    margin: 5px;
+  }
+
+  .colPollPercent{
+    @include ms-Grid-col;
+    @include ms-sm4;
+    @include ms-md1;
+    padding-left: 10px;
+    font-weight: bold;
+    font-size: smaller;
+    color: #b4b1b1;
+  }
+}

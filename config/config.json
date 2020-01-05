@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "anonymous-poll-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/anonymousPoll/AnonymousPollWebPart.js",
+          "manifest": "./src/webparts/anonymousPoll/AnonymousPollWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "AnonymousPollWebPartStrings": "lib/webparts/anonymousPoll/loc/{locale}.js"
+  }
+}
