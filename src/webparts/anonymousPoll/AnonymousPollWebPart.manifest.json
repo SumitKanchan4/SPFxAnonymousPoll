@@ -3,27 +3,36 @@
   "id": "53abf78e-759f-4b9a-9f4c-018af25b7ce5",
   "alias": "AnonymousPoll",
   "componentType": "WebPart",
-
   // The "*" signifies that the version should be taken from the package.json
   "version": "*",
   "manifestVersion": 2,
-
   // If true, the component can only be installed on sites where Custom Script is allowed.
   // Components that allow authors to embed arbitrary script code should set this to true.
   // https://support.office.com/en-us/article/Turn-scripting-capabilities-on-or-off-1f2c515f-5d7e-448a-9fd7-835da935584f
   "requiresCustomScript": false,
-  "supportedHosts": ["SharePointWebPart"],
-
-  "preconfiguredEntries": [{
-    "groupId": "5c03119e-3074-46fd-976b-c60198311f71",
-    "group": { "default": "SharePointWidgets.com" },
-    "title": { "default": "Anonymous Poll" },
-    "description": { "default": "Anonymous Poll" },
-    "officeFabricIconFontName": "BarChart4",
-    "properties": {
-      "showResultToUser": "true",
-      "pollStarted":"false",
-      "pollAction": "PollStopped"
+  "supportedHosts": [
+    "SharePointWebPart"
+  ],
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f71",
+      "group": {
+        "default": "SharePointWidgets.com"
+      },
+      "title": {
+        "default": "Anonymous Poll"
+      },
+      "description": {
+        "default": "Anonymous Poll"
+      },
+      "officeFabricIconFontName": "BarChart4",
+      "properties": {
+        "showResultToUser": true,
+        "pollStarted": false,
+        "pollAction": "PollStopped",
+        "pollData": [],
+        "usersVoted": []
+      }
     }
-  }]
+  ]
 }

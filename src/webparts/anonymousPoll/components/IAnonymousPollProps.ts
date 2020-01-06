@@ -5,11 +5,10 @@ export interface IAnonymousPollProps {
   pollDetails: IAnonymousPollWebPartProps;
   currentUser: string;
   isEditMode: boolean;
-  pollStarted: boolean;
-  serviceScope: ServiceScope;
+  logSource: string;
 }
 
 export interface IPollData {
   option: string;
-  votes: string;
+  votes: number;
 }

@@ -8,26 +8,20 @@ import { Label } from 'office-ui-fabric-react/lib/Label';
 import { set } from '@microsoft/sp-lodash-subset';
 const voted: any = require('../assets/voted1.jpg');
 import { SPLogger } from 'spfxhelper';
-import { ServiceScope } from '@microsoft/sp-core-library';
+import { Log } from '@microsoft/sp-core-library';
 
 export default class AnonymousPoll extends React.Component<IAnonymousPollProps, { selectedOption: string }> {
 
   constructor(props: IAnonymousPollProps, state: any) {
     super(props);
     this.state = {
-      selectedOption: ''
-    };    
-    this.serviceScope = this.props.serviceScope;
+      selectedOption: undefined
+    };
   }
-
-  private serviceScope: ServiceScope = undefined;
 
   public render(): React.ReactElement<IAnonymousPollProps> {
     let totalVotes: number = 0;
-    this.props.pollDetails.pollData ? this.props.pollDetails.pollData.map(item => totalVotes = totalVotes + parseInt(item.votes)) : 0;
-    SPLogger.logInfo(`Current user voted: ${this.props.pollDetails.usersVoted.indexOf(this.props.currentUser) > -1}`, this.serviceScope);
-    console.log('********************************************************* Render Method ***************************************************************');
-    console.table(this.props.pollDetails.usersVoted);
+    this.props.pollDetails.pollData.map(item => totalVotes = totalVotes + item.votes);
 
     return (
       <div className={styles.anonymousPoll}>
@@ -91,7 +85,7 @@ export default class AnonymousPoll extends React.Component<IAnonymousPollProps, 
 
     let currentVotes: number = 0;
     this.props.pollDetails.pollData && this.props.pollDetails.pollData.some(item => item.option === option) ?
-      currentVotes = currentVotes + parseInt(this.props.pollDetails.pollData.filter(item => item.option === option)[0].votes) : 0;
+      currentVotes = currentVotes + this.props.pollDetails.pollData.filter(item => item.option === option)[0].votes : 0;
 
     let perc: number = Math.round((currentVotes / totalVotes) * 100);
 
@@ -150,7 +144,7 @@ export default class AnonymousPoll extends React.Component<IAnonymousPollProps, 
           <div className={styles.col}>
             <ChoiceGroup
               options={options}
-              disabled={!this.props.pollStarted}
+              disabled={!this.props.pollDetails.pollStarted}
               label={this.props.pollDetails.question} className={styles.lblQuestion}
               required={true}
               onChange={(ev, option) => this.optionOnChange(undefined, option)}
@@ -159,7 +153,7 @@ export default class AnonymousPoll extends React.Component<IAnonymousPollProps, 
         </div>
         <div className={styles.row}>
           <div className={styles.col}>
-            <PrimaryButton text={`vote`} onClick={() => this.voteClicked(this.props)} disabled={!this.props.pollStarted}></PrimaryButton>
+            <PrimaryButton text={`vote`} onClick={() => this.voteClicked(this.props)} disabled={!this.props.pollDetails.pollStarted}></PrimaryButton>
           </div>
         </div>
       </div>
@@ -169,29 +163,24 @@ export default class AnonymousPoll extends React.Component<IAnonymousPollProps, 
   private voteClicked(props: IAnonymousPollProps): void {
     try {
 
+      let pollInfo: IPollData[] = this.props.pollDetails.pollData;
 
-      // let pollInfo: IPollData[] = this.props.pollDetails.pollData;
-      // SPLogger.logInfo(`poll information: ${pollInfo}`, this.serviceScope);
+      // if option is available in poll data
+      if (pollInfo.some(item => item.option === this.state.selectedOption)) {
+        pollInfo.filter(item => item.option === this.state.selectedOption)[0].votes += 1;
+      }
+      else {
+        pollInfo.push({ option: this.state.selectedOption, votes: 1 });
+      }
 
-      // // if option is available in poll data
-      // if (pollInfo.some(item => item.option === this.state.selectedOption)) {
-      //   pollInfo.filter(item => item.option === this.state.selectedOption)[0].votes += 1;
-      // }
-      // else {
-      //   pollInfo.push({ option: this.state.selectedOption, votes: '1' });
-      // }
-
-      // add current user in the users voted list
-      //this.props.pollDetails.usersVoted.push(this.props.currentUser);
-      props.pollDetails.usersVoted.push(`${this.state.selectedOption}`);
-
-      set(props.pollDetails, 'usersVoted', props.pollDetails.usersVoted);
-      // console.log('******************************************************* voteClicked *****************************************************************');
-      // console.log(this.props);
-      //this.forceUpdate();
+      let users: string[] = this.props.pollDetails.usersVoted;
+      users.push(this.props.currentUser);
+      set(this.props.pollDetails, "pollData", pollInfo);
+      set(this.props.pollDetails, "usersVoted", users);
     }
     catch (error) {
-      SPLogger.logError(error as Error, this.serviceScope);
+      Log.error(this.props.logSource, new Error(`Error occured in AnonymousPoll.voteClicked()`));
+      Log.error(this.props.logSource, error);
     }
   }
 
@@ -201,7 +190,7 @@ export default class AnonymousPoll extends React.Component<IAnonymousPollProps, 
 
   private generateRandomColor(): string {
 
-    let pollColor: string = ""; // default value will be theme from scss file
+    let pollColor: string = undefined; // default value will be theme from scss file
 
     if (this.props.pollDetails.color) {
       pollColor = this.props.pollDetails.color;
@@ -210,7 +199,7 @@ export default class AnonymousPoll extends React.Component<IAnonymousPollProps, 
   }
 
   public componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    SPLogger.logError(error, this.serviceScope);
-    SPLogger.logInfo(errorInfo.componentStack, this.serviceScope);
+    Log.error(this.props.logSource, error);
+    Log.error(this.props.logSource, new Error(errorInfo.componentStack));
   }
 }

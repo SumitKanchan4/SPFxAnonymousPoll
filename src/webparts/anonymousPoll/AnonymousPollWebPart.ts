@@ -22,22 +22,19 @@ export interface IAnonymousPollWebPartProps {
   pollAction: string;
 }
 
+const LOG_SOURCE: string = `AnonymousPollWebPart`;
+
 export default class AnonymousPollWebPart extends BaseClientSideWebPart<IAnonymousPollWebPartProps> {
 
   public render(): void {
-    console.table(this.properties);
-    this.properties.pollData = this.properties.pollData ? this.properties.pollData : [];
-    this.properties.usersVoted = this.properties.usersVoted ? this.properties.usersVoted : [];
-    this.properties.pollStarted = this.properties.pollStarted === true ? true : false;
 
     const element: React.ReactElement<IAnonymousPollProps> = React.createElement(
       AnonymousPoll,
       {
         pollDetails: this.properties,
-        currentUser: this.context.pageContext.user.email,
+        currentUser: `abc.com`, //this.context.pageContext.user.email,
         isEditMode: this.displayMode === DisplayMode.Edit,
-        pollStarted: this.properties.pollStarted,
-        serviceScope: this.context.serviceScope
+        logSource: LOG_SOURCE
       }
     );
 
@@ -59,27 +56,23 @@ export default class AnonymousPollWebPart extends BaseClientSideWebPart<IAnonymo
       switch (newValue) {
         case 'PollStarted':
           response = confirm("Do you want to start the poll ?");
-          this.properties.pollStarted = response;
-          this.properties.pollAction = response ? newValue : oldValue;
-          // set(this.properties, "pollStarted", response);
-          // set(this.properties, "pollAction", response ? newValue : oldValue);
+          set(this.properties, "pollStarted", response);
+          set(this.properties, "pollAction", response ? newValue : oldValue);
           break;
         case 'PollStopped':
-          response = confirm("Do you want to stop the poll, Users won't be able to vote after then ?");
-          this.properties.pollStarted = !response;
-          this.properties.pollAction = response ? newValue : oldValue;
-          // set(this.properties, "pollStarted", !response);
-          // set(this.properties, "pollAction", response ? newValue : oldValue);
+          response = confirm("Do you want to stop the poll? Users won't be able to vote after then, continue ?");
+          set(this.properties, "pollStarted", !response);
+          set(this.properties, "pollAction", response ? newValue : oldValue);
           break;
         case 'ClearResults':
           response = confirm("You will loose all the poll results and cannot be undone. Do you want to continue ?");
           if (response) {
-            this.properties.color = '';
-            this.properties.options = '';
+            this.properties.color = undefined;
+            this.properties.options = undefined;
             this.properties.pollAction = 'PollStopped';
             this.properties.pollData = [];
             this.properties.pollStarted = false;
-            this.properties.question = '';
+            this.properties.question = undefined;
             this.properties.showResultToUser = true;
             this.properties.usersVoted = [];
           }
@@ -90,7 +83,7 @@ export default class AnonymousPollWebPart extends BaseClientSideWebPart<IAnonymo
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    
+
     return {
       pages: [
         {
@@ -103,7 +96,7 @@ export default class AnonymousPollWebPart extends BaseClientSideWebPart<IAnonymo
               groupFields: [
                 PropertyPaneTextField('question', {
                   underlined: true,
-                  placeholder: `Enter the poll question`,
+                  placeholder: `Enter the question`,
                   disabled: this.properties.pollStarted
                 }),
                 PropertyPaneTextField('options', {
